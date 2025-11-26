@@ -1,23 +1,14 @@
+// Movie model: title, year, cast array, synopsis, trailer (YouTube id or url), posterUrl, reviews ref
 const mongoose = require('mongoose');
-
-const CastSchema = new mongoose.Schema({
-  name: String,
-  role: String,
-  photo: String
-});
 
 const MovieSchema = new mongoose.Schema({
   title: { type: String, required: true },
   year: Number,
-  genres: [String],
+  cast: [String],
   synopsis: String,
-  poster: String,
   trailerUrl: String,
-  cast: [CastSchema],
-  runtime: Number,
-  rating: { type: Number, default: 0 },
-  reviewsCount: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
-});
+  posterUrl: String,
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Movie', MovieSchema);

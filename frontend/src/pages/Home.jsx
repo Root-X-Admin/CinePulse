@@ -1,36 +1,64 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import MovieCard from '../components/MovieCard'
-import { motion } from 'framer-motion'
+/** @jsxImportSource @emotion/react */
+import React from 'react';
+import { css } from '@emotion/react';
+import { motion } from 'framer-motion';
+import MovieCard from '../components/MovieCard';
 
-export default function Home(){
-  const [movies, setMovies] = useState([])
-  const [q, setQ] = useState('')
+const sampleMovies = [
+  { _id: 1, title: "Inception", year: 2010, posterUrl: "", synopsis: "Dream heist thriller." },
+  { _id: 2, title: "Interstellar", year: 2014, posterUrl: "", synopsis: "Space exploration epic." },
+  { _id: 3, title: "The Dark Knight", year: 2008, posterUrl: "", synopsis: "Batman faces Joker." },
+];
 
-  useEffect(()=>{
-    const params = q ? `?q=${encodeURIComponent(q)}` : ''
-    axios.get(`/api/movies${params}`)
-      .then(res => setMovies(res.data))
-      .catch(err => console.error(err))
-  },[])
-
+export default function Home() {
   return (
-    <div>
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <h1 className="text-4xl font-bold mb-6">Featured</h1>
-        <div className="mb-6 flex gap-3">
-          <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search movies..." className="px-4 py-2 rounded bg-gray-800 text-white border border-gray-700 w-full" />
-          <button onClick={() => {
-            const params = q ? `?q=${encodeURIComponent(q)}` : ''
-            axios.get(`/api/movies${params}`).then(res => setMovies(res.data))
-          }} className="px-4 py-2 bg-red-500 rounded text-white">Search</button>
-        </div>
-      </motion.div>
-      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {movies.map(m => (
-          <MovieCard key={m._id} movie={m} />
+    <div
+      css={css`
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem;
+      `}
+    >
+      <h1
+        css={css`
+          font-size: 2.5rem;
+          font-weight: bold;
+          text-align: center;
+          color: #fff;
+          margin-bottom: 2rem;
+        `}
+      >
+        Trending Movies
+      </h1>
+      <motion.div
+        css={css`
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 2rem;
+        `}
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.15
+            }
+          }
+        }}
+      >
+        {sampleMovies.map(movie => (
+          <motion.div
+            key={movie._id}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+            }}
+          >
+            <MovieCard movie={movie} />
+          </motion.div>
         ))}
       </motion.div>
     </div>
-  )
+  );
 }
