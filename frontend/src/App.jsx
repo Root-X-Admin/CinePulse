@@ -1,16 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css } from '@emotion/react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Movie from './pages/Movie';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
-import AdminLogin from './pages/AdminLogin';
-
-// Simple check for admin login token
-const isAdminLoggedIn = () => !!localStorage.getItem('fm_token');
+import AdminRoute from './components/AdminRoute'; // Import the guard
 
 export default function App() {
   return (
@@ -33,10 +30,15 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<Movie />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
+          
+          {/* SECURE THE ADMIN PAGE */}
           <Route
             path="/admin"
-            element={isAdminLoggedIn() ? <Admin /> : <Navigate to="/admin-login" />}
+            element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
+            }
           />
         </Routes>
       </main>
